@@ -1,6 +1,8 @@
-/* trying out a modern, reasoned-out css "reset" */
-/* good article */
-/* https://www.joshwcomeau.com/css/custom-css-reset/ */
+/* trying out a modern, reasoned-out css "reset"
+ * good article:
+ * https://www.joshwcomeau.com/css/custom-css-reset/
+ * this is not necessary for this custom <select> project
+ */
 
 /*
   1. Use a more-intuitive box-sizing model.
