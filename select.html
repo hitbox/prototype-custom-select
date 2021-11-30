@@ -1,0 +1,44 @@
+<!doctype html>
+<!--
+https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select#customizing_select_styles
+-->
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="reset.css">
+        <link rel="stylesheet" href="select.css">
+        <script src="select.js"></script>
+    </head>
+    <body>
+        <form>
+            <fieldset>
+                <legend>Standard controls</legend>
+                <select name="1A" id="select" autocomplete="off" required>
+                    <option value="0">Carrots</option>
+                    <option value="1">Peas</option>
+                    <option value="2">Beans</option>
+                    <option value="3">Tater</option>
+                    <option value="4">Cabbage</option>
+                    <option value="5">Broccoli</option>
+                    <option value="6">Bread</option>
+                    <option value="7">Taco</option>
+                </select>
+            </fieldset>
+            <fieldset id="custom">
+                <legend>Custom controls</legend>
+                <select name="2A" id="select" autocomplete="off" required>
+                    <option value="0">Carrots</option>
+                    <option value="1">Peas</option>
+                    <option value="2">Beans</option>
+                    <option value="3">Tater</option>
+                    <option value="4">Cabbage</option>
+                    <option value="5">Broccoli</option>
+                    <option value="6">Bread</option>
+                    <option value="7">Taco</option>
+                </select>
+            </fieldset>
+        <button>Submit</button>
+        </form>
+        <div id="post">Here's where the post output will go.</div>
+    </body>
+</html>
