@@ -3,17 +3,11 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select#customizing_sel
 */
 
 :root {
-    --button-border-color: #8f8f9d;
-    --button-background-color: #e9e9ed;
-    --button-hover-background-color: LightGray;
+    --button-border-color: black;
 }
 
 /* <select> search input */
 input[type=search].select {
-    /*width: 100%;*/
-    margin: .5rem;
-    padding: .5rem;
-    /*min-height: 1rem;*/
 }
 
 .select[data-multiple] .header {
@@ -43,13 +37,13 @@ input[type=search].select {
 
 /* an option in select */
 .select .option {
-    background-color: var(--button-background-color);
 }
 
 /* hover option in select */
 .select .option:hover {
     cursor: pointer;
-    background-color: var(--button-hover-background-color);
+    background-color: blue;
+    color: white;
 }
 
 /* disable hide when search is on and matched */
@@ -96,13 +90,9 @@ input[type=search].select {
     border: 1px solid var(--button-border-color);
     /* radius eye-balled from Firefox */
     border-radius: 4px;
-    /* color picked from Firefox */
-    background-color: var(--button-background-color);
 }
 
 .select .header:hover {
-    /* guessed color */
-    background-color: var(--button-hover-background-color);
 }
 
 .dropdown[data-open] {
