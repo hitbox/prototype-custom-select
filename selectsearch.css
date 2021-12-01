@@ -1,4 +1,6 @@
-/* https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select#customizing_select_style */
+/*
+https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select#customizing_select_style
+*/
 
 :root {
     --background-color: white;
@@ -17,24 +19,21 @@ button {
     padding: .5rem 1rem;
 }
 
-input[type=search] {
-    width: 100%;
+/* <select> search input */
+input[type=search].select {
+    /*width: 100%;*/
+    margin: .5rem;
+    padding: .5rem;
+    min-height: 1rem;
 }
 
-datalist {
-    background-color: white;
-    color: black;
-}
-
-.select:focus {
-    /*border-color: blue;*/
-}
-
-fieldset#custom div.select[data-multiple] div.header {
+.select[data-multiple] .header {
     display: none;
 }
 
-fieldset#custom div.select div.header {
+/* XXX: why is the content set twice? */
+
+.select .header {
     content: '↓';
     display: inline-flex;
     align-items: center;
@@ -59,20 +58,22 @@ fieldset#custom div.select div.header {
     color: white;
 }
 
-.dropdown input[type=search] {
-    padding: .25rem;
+.options-list {
+    /*padding: .5rem;*/
 }
 
-.datalist.search .option.match {
-    display: initial;
+/* disable hide when search is on and matched */
+.options-list.search .option.match {
+    display: block;
 }
 
-.datalist.search .option {
+/* hide all options when searching, unhiding matches */
+.options-list.search .option {
     display: none;
 }
 
-fieldset#custom div.select div.header:hover:after {
-    /*background-color: blue;*/
+.options-list .option {
+    padding: 1rem;
 }
 
 /* hide original select tags */
@@ -100,15 +101,26 @@ fieldset#custom div.select div.header:hover:after {
 */
 
 /* style select wrapper like a button */
-fieldset#custom div.select {
+.select {
     user-select: none;
     box-sizing: border-box;
-    position: relative;
+    /*position: relative;*/
+    /*
     border-style: solid;
     border-width: 0;
     border-color: gray;
-    width: auto;
+    */
+    /*width: auto;*/
+    width: fit-content;
     display: inline-block;
+}
+
+.select .header {
+    flex: 1;
+    display: flex;
+    width: auto;
+    box-sizing: border-box;
+    border: 1px solid gray;
 }
 
 .dropdown[data-open] {
@@ -125,16 +137,16 @@ fieldset#custom div.select {
     border-style: solid;
     border-width: 1px;
     border-color: gray;
-    left: 0;
+    /*left: 0;*/
     display: none;
-    width: 100%;
+    /*width: 100%;*/
     box-sizing: border-box;
     z-index: 2;
     border-bottom-left-radius: 4px;
     border-bottom-right-radius: 4px;
 }
 
-.dropdown > .datalist {
+.dropdown > .options-list {
     /* it's like this inherits display: none and doesn't lose it. */
     /* TODO: figure this out */
     display: initial;
@@ -155,17 +167,6 @@ fieldset#custom div.select div.optgroup div.label {
 fieldset#custom div.select div.optgroup div.option div.label {
     font-weight: normal;
     padding: .25em;
-}
-
-fieldset#custom div.select div.header {
-    flex: 1;
-    display: flex;
-    width: auto;
-    box-sizing: border-box;
-    border-width: 1px;
-    border-style: inherit;
-    border-color: inherit;
-    border-radius: inherit;
 }
 
 fieldset#custom div.select div.header span {

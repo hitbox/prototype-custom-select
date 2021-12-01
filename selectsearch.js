@@ -1,20 +1,19 @@
-"use strict";
 // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select#customizing_select_styles
 
-function initSelect(originalSelect) {
+function selectSearch(selectElement) {
     const selectWrapper = document.createElement("div");
     const dropdown = document.createElement("div");
     const header = document.createElement("div");
-    //const datalist = document.createElement("datalist");
-    const datalist = document.createElement("div");
+    //const optionsList = document.createElement("datalist");
+    const optionsList = document.createElement("div");
     const currentValueLabel = document.createElement("span");
-    const originalOptions = originalSelect.options;
-    const parent = originalSelect.parentElement;
-    const multiple = originalSelect.hasAttribute("multiple");
+    const originalOptions = selectElement.options;
+    const parent = selectElement.parentElement;
+    const multiple = selectElement.hasAttribute("multiple");
 
     function optionClick(event) {
         const disabled = this.hasAttribute("data-disabled");
-        originalSelect.value = this.dataset.value;
+        selectElement.value = this.dataset.value;
         currentValueLabel.innerText = this.dataset.label;
         if (disabled) {
             return;
@@ -47,19 +46,19 @@ function initSelect(originalSelect) {
     };
 
     // disable tabbing for original select
-    originalSelect.tabIndex = -1;
+    selectElement.tabIndex = -1;
 
     selectWrapper.classList.add("select");
     selectWrapper.tabIndex = 1;
 
     // add header
     header.classList.add("header");
-    currentValueLabel.innerText = originalSelect.label;
+    currentValueLabel.innerText = selectElement.label;
     header.appendChild(currentValueLabel);
     selectWrapper.appendChild(header);
 
     // make data- attributes from original
-    for (let attribute of originalSelect.attributes) {
+    for (let attribute of selectElement.attributes) {
         selectWrapper.dataset[attribute.name] = attribute.value;
     }
 
@@ -69,19 +68,22 @@ function initSelect(originalSelect) {
 
     dropdown.classList.add("dropdown");
     searchDiv.appendChild(searchField);
+    searchField.classList.add("select");
     searchField.setAttribute("type", "search");
     searchField.setAttribute("placeholder", "search");
 
     // clear search on close?
+    // clear search on click or enter?
     // highlight search match?
     searchField.addEventListener("input", function(event) {
+        // update search on typing
         const search = searchField.value;
         if (search === "") {
-            datalist.classList.remove("search");
+            optionsList.classList.remove("search");
         } else {
-            datalist.classList.add("search");
+            optionsList.classList.add("search");
             const regex = new RegExp(`${search}`, "i");
-            for (let option of datalist.children) {
+            for (let option of optionsList.children) {
                 let haystack = option.dataset["label"];
                 let index = haystack.search(regex);
                 if (index === -1) {
@@ -112,11 +114,11 @@ function initSelect(originalSelect) {
         option.onkeyup = optionKeyUp;
         option.tabIndex = i + 1;
         option.appendChild(label);
-        datalist.appendChild(option);
+        optionsList.appendChild(option);
     }
 
     // copy mimic option groups
-    for (let originalOptionGroup of originalSelect.querySelectorAll("optgroup")) {
+    for (let originalOptionGroup of selectElement.querySelectorAll("optgroup")) {
         const optgroup = document.createElement("div");
         const label = document.createElement("div");
         const options = originalOptionGroup.querySelectorAll("option");
@@ -151,15 +153,15 @@ function initSelect(originalSelect) {
     //    event.preventDefault();
     //}
 
-    parent.insertBefore(selectWrapper, originalSelect);
-    header.appendChild(originalSelect);
-    dropdown.appendChild(datalist);
+    parent.insertBefore(selectWrapper, selectElement);
+    header.appendChild(selectElement);
+    dropdown.appendChild(optionsList);
     selectWrapper.appendChild(dropdown)
 
     // commenting this out did not break the positioning.
-    //datalist.style.top = header.offsetTop + header.offsetHeight + "px";
+    //optionsList.style.top = header.offsetTop + header.offsetHeight + "px";
 
-    datalist.classList.add("datalist");
+    optionsList.classList.add("options-list");
 
     // open/close dropdown
     // this was selectWrapper
@@ -204,19 +206,7 @@ function initSelect(originalSelect) {
         currentValueLabel.innerText = element.label;
         return selectWrapper.offsetWidth;
     }));
-    selectWrapper.style.width = width + "px";
+    //selectWrapper.style.width = width + "px";
 }
 
-document.addEventListener("DOMContentLoaded", function(event) {
-    for (let selectTag of custom.querySelectorAll("select")) {
-        initSelect(selectTag);
-    }
-
-    // form submit needs custom?
-    document.forms[0].onsubmit = function(event) {
-        const data = new FormData(this);
-        event.preventDefault();
-        let post = document.getElementById("post");
-        post.innerText = JSON.stringify([...data.entries()]);
-    }
-});
+export { selectSearch };
