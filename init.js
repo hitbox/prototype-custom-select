@@ -1,6 +1,7 @@
 "use strict";
 
-import { selectSearch } from "./selectsearch.js";
+// see selectsearch.js:bottom for why this is commented out
+//import { selectSearch } from "./selectsearch.js";
 
 document.addEventListener("DOMContentLoaded", function(event) {
     // customize all <select> inside #custom

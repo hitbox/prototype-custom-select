@@ -209,4 +209,9 @@ function selectSearch(selectElement) {
     //selectWrapper.style.width = width + "px";
 }
 
-export { selectSearch };
+// having tons of problems trying to make this a module.
+// flask run doesn't serve them correctly as application/javascript which throws error.
+// have to <script type="module"... or error because of this export statement.
+// when modules work (here) they're annoying to add all the extra.
+// commenting out the export until this is sorted.
+//export { selectSearch };
