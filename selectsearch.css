@@ -3,20 +3,9 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select#customizing_sel
 */
 
 :root {
-    --background-color: white;
-}
-
-body {
-    margin: 1rem;
-    font-family: arial;
-}
-
-button, fieldset {
-    margin: 1rem 0;
-}
-
-button {
-    padding: .5rem 1rem;
+    --button-border-color: #8f8f9d;
+    --button-background-color: #e9e9ed;
+    --button-hover-background-color: LightGray;
 }
 
 /* <select> search input */
@@ -24,7 +13,7 @@ input[type=search].select {
     /*width: 100%;*/
     margin: .5rem;
     padding: .5rem;
-    min-height: 1rem;
+    /*min-height: 1rem;*/
 }
 
 .select[data-multiple] .header {
@@ -52,14 +41,15 @@ input[type=search].select {
     padding: .5em;
 }
 
-.select .option:hover {
-    cursor: pointer;
-    background-color: grey;
-    color: white;
+/* an option in select */
+.select .option {
+    background-color: var(--button-background-color);
 }
 
-.options-list {
-    /*padding: .5rem;*/
+/* hover option in select */
+.select .option:hover {
+    cursor: pointer;
+    background-color: var(--button-hover-background-color);
 }
 
 /* disable hide when search is on and matched */
@@ -73,7 +63,7 @@ input[type=search].select {
 }
 
 .options-list .option {
-    padding: 1rem;
+    padding: 4px;
 }
 
 /* hide original select tags */
@@ -88,39 +78,31 @@ input[type=search].select {
     display: none;
 }
 
-/*
-.select .header select optgroup {
-    display: none;
-}
-*/
-
-/*
-.select select div.option {
-    display: none;
-}
-*/
-
 /* style select wrapper like a button */
 .select {
     user-select: none;
     box-sizing: border-box;
-    /*position: relative;*/
-    /*
-    border-style: solid;
-    border-width: 0;
-    border-color: gray;
-    */
-    /*width: auto;*/
     width: fit-content;
     display: inline-block;
 }
 
+/* this is the current value shown */
 .select .header {
     flex: 1;
     display: flex;
     width: auto;
     box-sizing: border-box;
-    border: 1px solid gray;
+    /* color picked from Firefox */
+    border: 1px solid var(--button-border-color);
+    /* radius eye-balled from Firefox */
+    border-radius: 4px;
+    /* color picked from Firefox */
+    background-color: var(--button-background-color);
+}
+
+.select .header:hover {
+    /* guessed color */
+    background-color: var(--button-hover-background-color);
 }
 
 .dropdown[data-open] {
@@ -134,9 +116,7 @@ input[type=search].select {
     -moz-appearance: none;
     appearance: none;
     position: absolute;
-    border-style: solid;
-    border-width: 1px;
-    border-color: gray;
+    border: 1px solid var(--button-border-color);
     /*left: 0;*/
     display: none;
     /*width: 100%;*/
