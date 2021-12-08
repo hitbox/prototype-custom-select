@@ -73,7 +73,7 @@ input[type=search].select {
 }
 
 /* style select wrapper like a button */
-.select {
+.select.button {
     user-select: none;
     box-sizing: border-box;
     width: fit-content;

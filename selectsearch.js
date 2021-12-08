@@ -48,7 +48,7 @@ function selectSearch(selectElement) {
     // disable tabbing for original select
     selectElement.tabIndex = -1;
 
-    selectWrapper.classList.add("select");
+    selectWrapper.classList.add("select", "button");
     selectWrapper.tabIndex = 1;
 
     // add header
