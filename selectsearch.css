@@ -116,10 +116,13 @@ input[type=search].select {
     border-bottom-right-radius: 4px;
 }
 
-.dropdown > .options-list {
-    /* it's like this inherits display: none and doesn't lose it. */
-    /* TODO: figure this out */
-    display: initial;
+.options-list {
+    /* make the option list scroll with something like */
+    /*
+    max-height: 30vh;
+    display: block;
+    overflow: scroll;
+    */
 }
 
 fieldset#custom div.select datalist div.option {
