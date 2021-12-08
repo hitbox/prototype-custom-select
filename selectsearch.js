@@ -1,12 +1,31 @@
 // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select#customizing_select_styles
 
+function createChevronDown() {
+    const xmlns = "http://www.w3.org/2000/svg";
+    const chevronDownSVG = document.createElementNS(xmlns, "svg");
+    chevronDownSVG.setAttributeNS(null, "width", "1rem");
+    chevronDownSVG.setAttributeNS(null, "height", "1rem");
+    chevronDownSVG.setAttributeNS(null, "viewBox", "0 0 100 100");
+
+    const chevronDownPath = document.createElementNS(xmlns, "polyline");
+    chevronDownPath.setAttributeNS(null, "points", "25,50 50,80 75,50");
+    chevronDownPath.setAttributeNS(null, "style", "stroke:black;stroke-width:10;fill:none;");
+    chevronDownSVG.appendChild(chevronDownPath);
+
+    return chevronDownSVG;
+}
+
 function selectSearch(selectElement) {
     const selectWrapper = document.createElement("div");
     const dropdown = document.createElement("div");
     const header = document.createElement("div");
     //const optionsList = document.createElement("datalist");
     const optionsList = document.createElement("div");
-    const currentValueLabel = document.createElement("span");
+
+    const labelContainer = document.createElement("div");
+    const currentValueLabel = document.createElement("div");
+    const labelArrow = document.createElement("div");
+
     const originalOptions = selectElement.options;
     const parent = selectElement.parentElement;
     const multiple = selectElement.hasAttribute("multiple");
@@ -53,8 +72,19 @@ function selectSearch(selectElement) {
 
     // add header
     header.classList.add("header");
+
     currentValueLabel.innerText = selectElement.label;
-    header.appendChild(currentValueLabel);
+    currentValueLabel.classList.add("value");
+
+    labelArrow.classList.add("arrow");
+    const chevronDownSVG = createChevronDown();
+    labelArrow.appendChild(chevronDownSVG);
+
+    labelContainer.classList.add("label-container");
+    labelContainer.appendChild(currentValueLabel);
+    labelContainer.appendChild(labelArrow);
+
+    header.appendChild(labelContainer);
     selectWrapper.appendChild(header);
 
     // make data- attributes from original
@@ -153,6 +183,7 @@ function selectSearch(selectElement) {
     //    event.preventDefault();
     //}
 
+    parent.classList.add("select", "wrapper");
     parent.insertBefore(selectWrapper, selectElement);
     header.appendChild(selectElement);
     dropdown.appendChild(optionsList);

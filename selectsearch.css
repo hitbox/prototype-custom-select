@@ -14,25 +14,19 @@ input[type=search].select {
     display: none;
 }
 
-/* XXX: why is the content set twice? */
-
-.select .header {
-    content: '↓';
-    display: inline-flex;
-    align-items: center;
-    padding: 0;
-    position: relative;
+.label-container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    width: 100%;
 }
 
-.select > .header::after {
-    content: '↓';
-    align-self: stretch;
-    display: flex;
-    align-content: center;
-    justify-content: center;
-    justify-items: center;
-    align-items: center;
-    padding: .5em;
+.label-container > .value {
+    flex: auto;
+}
+
+.label-container > .arrow {
+    flex-shrink: 1;
 }
 
 /* an option in select */
@@ -114,35 +108,4 @@ input[type=search].select {
     z-index: 2;
     border-bottom-left-radius: 4px;
     border-bottom-right-radius: 4px;
-}
-
-.options-list {
-    /* make the option list scroll with something like */
-    /*
-    max-height: 30vh;
-    display: block;
-    overflow: scroll;
-    */
-}
-
-fieldset#custom div.select datalist div.option {
-    /*background-color: white;*/
-    margin-bottom: 1px;
-    cursor: pointer;
-    padding: 0.5em;
-    border-width: 0;
-}
-
-fieldset#custom div.select div.optgroup div.label {
-    font-weight: bold;
-}
-
-fieldset#custom div.select div.optgroup div.option div.label {
-    font-weight: normal;
-    padding: .25em;
-}
-
-fieldset#custom div.select div.header span {
-    flex: 1;
-    padding: .5em;
 }
