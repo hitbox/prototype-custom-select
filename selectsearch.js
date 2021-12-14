@@ -37,7 +37,8 @@ function selectSearch(selectElement) {
         if (disabled) {
             return;
         }
-        if (multiple) {
+        if (selectElement.multiple) {
+            console.log(selectElement.selectedOptions);
             if (event.shiftKey) {
                 const checked = this.hasAttribute("data-checked");
                 if (checked) {
@@ -45,7 +46,12 @@ function selectSearch(selectElement) {
                 } else {
                     this.setAttribute("data-checked", "");
                 };
+            } else if (event.ctrlKey) {
+                console.log(event);
+                this.dataset.checked = !this.dataset.checked;
+                event.stopPropagation();
             } else {
+                // remove all other checkeds
                 const options = selectWrapper.querySelectorAll(".option");
                 for (i = 0; i < options.length; i++) {
                     const option = options[i];
@@ -129,22 +135,28 @@ function selectSearch(selectElement) {
 
     // copy mimic options
     for (let i = 0; i < originalOptions.length; i++) {
-        const option = document.createElement("div");
+        const optionDiv = document.createElement("div");
         const label = document.createElement("div");
         const o = originalOptions[i];
         for (let attribute of o.attributes) {
-            option.dataset[attribute.name] = attribute.value;
+            optionDiv.dataset[attribute.name] = attribute.value;
         }
-        option.classList.add("option");
+        optionDiv.classList.add("option");
         label.classList.add("label");
         label.innerText = o.label;
-        option.dataset.value = o.value;
-        option.dataset.label = o.label;
-        option.onclick = optionClick;
-        option.onkeyup = optionKeyUp;
-        option.tabIndex = i + 1;
-        option.appendChild(label);
-        optionsList.appendChild(option);
+        optionDiv.dataset.value = o.value;
+        optionDiv.dataset.label = o.label;
+        // XXX
+        // LEFT OFF HERE
+        // Want a way to associate optionDiv back to original <option> object
+        // and call <option>.selected = !<option>.selected or something like
+        // that.
+        // https://developer.mozilla.org/en-US/docs/Web/API/HTMLOptionElement/Option
+        optionDiv.onclick = optionClick;
+        optionDiv.onkeyup = optionKeyUp;
+        optionDiv.tabIndex = i + 1;
+        optionDiv.appendChild(label);
+        optionsList.appendChild(optionDiv);
     }
 
     // copy mimic option groups
@@ -199,16 +211,12 @@ function selectSearch(selectElement) {
     // TODO:
     // * add escape key to close
     header.onclick = function(event) {
-        if (multiple) {
-            // pass
+        event.stopPropagation();
+        const isOpen = dropdown.hasAttribute("data-open");
+        if (isOpen) {
+            dropdown.removeAttribute("data-open");
         } else {
-            const isOpen = dropdown.hasAttribute("data-open");
-            event.stopPropagation();
-            if (isOpen) {
-                dropdown.removeAttribute("data-open");
-            } else {
-                dropdown.setAttribute("data-open", "");
-            }
+            dropdown.setAttribute("data-open", "");
         }
     };
 
@@ -232,11 +240,11 @@ function selectSearch(selectElement) {
         }
     });
 
-    // calculate width
-    const width = Math.max(...Array.from(originalOptions).map(function(element) {
-        currentValueLabel.innerText = element.label;
-        return selectWrapper.offsetWidth;
-    }));
+    // // calculate width
+    // const width = Math.max(...Array.from(originalOptions).map(function(element) {
+    //     currentValueLabel.innerText = element.label;
+    //     return selectWrapper.offsetWidth;
+    // }));
     //selectWrapper.style.width = width + "px";
 }
 

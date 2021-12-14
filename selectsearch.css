@@ -10,10 +10,6 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select#customizing_sel
 input[type=search].select {
 }
 
-.select[data-multiple] .header {
-    display: none;
-}
-
 .label-container {
     display: flex;
     justify-content: space-between;
