@@ -3,8 +3,9 @@
 function createChevronDown() {
     const xmlns = "http://www.w3.org/2000/svg";
     const chevronDownSVG = document.createElementNS(xmlns, "svg");
-    chevronDownSVG.setAttributeNS(null, "width", "1rem");
-    chevronDownSVG.setAttributeNS(null, "height", "1rem");
+    // TODO: is this the best thing for width/height
+    chevronDownSVG.setAttributeNS(null, "width", "15");
+    chevronDownSVG.setAttributeNS(null, "height", "15");
     chevronDownSVG.setAttributeNS(null, "viewBox", "0 0 100 100");
 
     const chevronDownPath = document.createElementNS(xmlns, "polyline");
@@ -16,11 +17,11 @@ function createChevronDown() {
 }
 
 function selectSearch(selectElement) {
+    // main entry point
     const selectWrapper = document.createElement("div");
-    const dropdown = document.createElement("div");
+    const dropdownWrapper = document.createElement("div");
     const header = document.createElement("div");
-    //const optionsList = document.createElement("datalist");
-    const optionsList = document.createElement("div");
+    const optionsList = document.createElement("ul");
 
     const labelContainer = document.createElement("div");
     const currentValueLabel = document.createElement("div");
@@ -32,13 +33,13 @@ function selectSearch(selectElement) {
 
     function optionClick(event) {
         const disabled = this.hasAttribute("data-disabled");
-        selectElement.value = this.dataset.value;
-        currentValueLabel.innerText = this.dataset.label;
         if (disabled) {
             return;
         }
+        selectElement.value = this.dataset.value;
+        currentValueLabel.innerText = this.dataset.label;
+        // handle multiple selection capability
         if (selectElement.multiple) {
-            console.log(selectElement.selectedOptions);
             if (event.shiftKey) {
                 const checked = this.hasAttribute("data-checked");
                 if (checked) {
@@ -47,15 +48,13 @@ function selectSearch(selectElement) {
                     this.setAttribute("data-checked", "");
                 };
             } else if (event.ctrlKey) {
-                console.log(event);
                 this.dataset.checked = !this.dataset.checked;
                 event.stopPropagation();
             } else {
                 // remove all other checkeds
                 const options = selectWrapper.querySelectorAll(".option");
-                for (i = 0; i < options.length; i++) {
-                    const option = options[i];
-                    option.removeAttribute("data-checked");
+                for (let i = 0; i < options.length; i++) {
+                    options[i].removeAttribute("data-checked");
                 };
                 this.setAttribute("data-checked", "");
             };
@@ -70,23 +69,34 @@ function selectSearch(selectElement) {
         }
     };
 
+    //
+    const resizeObserver = new ResizeObserver(function(entries) {
+        for (let entry of entries) {
+            if (entry.contentBoxSize) {
+                labelContainer.style.width = entry.contentRect.width;
+            }
+        }
+    });
+
+    resizeObserver.observe(selectWrapper);
+
     // disable tabbing for original select
     selectElement.tabIndex = -1;
 
-    selectWrapper.classList.add("select", "button");
+    selectWrapper.classList.add("select-search", "select", "button");
     selectWrapper.tabIndex = 1;
 
     // add header
-    header.classList.add("header");
+    header.classList.add("select-search", "header");
 
     currentValueLabel.innerText = selectElement.label;
-    currentValueLabel.classList.add("value");
+    currentValueLabel.classList.add("select-search", "value");
 
-    labelArrow.classList.add("arrow");
+    labelArrow.classList.add("select-search", "arrow");
     const chevronDownSVG = createChevronDown();
     labelArrow.appendChild(chevronDownSVG);
 
-    labelContainer.classList.add("label-container");
+    labelContainer.classList.add("select-search", "label-container");
     labelContainer.appendChild(currentValueLabel);
     labelContainer.appendChild(labelArrow);
 
@@ -100,20 +110,20 @@ function selectSearch(selectElement) {
 
     // search field
     const searchDiv = document.createElement("div");
-    const searchField = document.createElement("input");
+    const searchInput = document.createElement("input");
 
-    dropdown.classList.add("dropdown");
-    searchDiv.appendChild(searchField);
-    searchField.classList.add("select");
-    searchField.setAttribute("type", "search");
-    searchField.setAttribute("placeholder", "search");
+    dropdownWrapper.classList.add("select-search", "dropdown");
+    searchDiv.appendChild(searchInput);
+    searchInput.classList.add("select-search", "select");
+    searchInput.setAttribute("type", "search");
+    searchInput.setAttribute("placeholder", "search");
 
     // clear search on close?
     // clear search on click or enter?
     // highlight search match?
-    searchField.addEventListener("input", function(event) {
+    searchInput.addEventListener("input", function(event) {
         // update search on typing
-        const search = searchField.value;
+        const search = searchInput.value;
         if (search === "") {
             optionsList.classList.remove("search");
         } else {
@@ -131,32 +141,31 @@ function selectSearch(selectElement) {
         }
     });
 
-    dropdown.appendChild(searchDiv);
+    dropdownWrapper.appendChild(searchDiv);
 
     // copy mimic options
     for (let i = 0; i < originalOptions.length; i++) {
-        const optionDiv = document.createElement("div");
-        const label = document.createElement("div");
+        const optionElement = document.createElement("li");
+        const labelElement = document.createElement("span");
         const o = originalOptions[i];
         for (let attribute of o.attributes) {
-            optionDiv.dataset[attribute.name] = attribute.value;
+            optionElement.dataset[attribute.name] = attribute.value;
         }
-        optionDiv.classList.add("option");
-        label.classList.add("label");
-        label.innerText = o.label;
-        optionDiv.dataset.value = o.value;
-        optionDiv.dataset.label = o.label;
-        // XXX
-        // LEFT OFF HERE
-        // Want a way to associate optionDiv back to original <option> object
+        optionElement.classList.add("select-search", "option");
+        labelElement.classList.add("select-search", "label");
+        labelElement.innerText = o.label;
+        optionElement.dataset.value = o.value;
+        optionElement.dataset.label = o.label;
+        // TODO
+        // Want a way to associate optionElement back to original <option> object
         // and call <option>.selected = !<option>.selected or something like
         // that.
         // https://developer.mozilla.org/en-US/docs/Web/API/HTMLOptionElement/Option
-        optionDiv.onclick = optionClick;
-        optionDiv.onkeyup = optionKeyUp;
-        optionDiv.tabIndex = i + 1;
-        optionDiv.appendChild(label);
-        optionsList.appendChild(optionDiv);
+        optionElement.onclick = optionClick;
+        optionElement.onkeyup = optionKeyUp;
+        optionElement.tabIndex = i + 1;
+        optionElement.appendChild(labelElement);
+        optionsList.appendChild(optionElement);
     }
 
     // copy mimic option groups
@@ -165,28 +174,28 @@ function selectSearch(selectElement) {
         const label = document.createElement("div");
         const options = originalOptionGroup.querySelectorAll("option");
         Object.assign(optgroup, originalOptionGroup);
-        optgroup.classList.add("optgroup");
-        label.classList.add("label");
+        optgroup.classList.add("select-search", "optgroup");
+        label.classList.add("select-search", "label");
         label.innerText = originalOptionGroup.label;
         optgroup.appendChild(label);
         selectWrapper.appendChild(optgroup);
         for (o of options) {
-            const option = document.createElement("div");
+            const optionElement = document.createElement("li");
             const label = document.createElement("div");
             for (attribute of o.attributes) {
-                option.dataset[attribute.name] = attribute.value;
+                optionElement.dataset[attribute.name] = attribute.value;
             }
-            option.classList.add("option");
-            label.classList.add("label");
+            optionElement.classList.add("select-search", "option");
+            label.classList.add("select-search", "label");
             label.innerText = o.label;
-            option.tabIndex = i + 1;
-            option.dataset.value = o.value;
-            option.dataset.label = o.label;
-            option.onclick = optionClick;
-            option.onkeyup = optionKeyUp;
-            option.tabIndex = i + 1;
-            option.appendChild(label);
-            optgroup.appendChild(option);
+            optionElement.tabIndex = i + 1;
+            optionElement.dataset.value = o.value;
+            optionElement.dataset.label = o.label;
+            optionElement.onclick = optionClick;
+            optionElement.onkeyup = optionKeyUp;
+            optionElement.tabIndex = i + 1;
+            optionElement.appendChild(label);
+            optgroup.appendChild(optionElement);
         };
     };
 
@@ -195,16 +204,16 @@ function selectSearch(selectElement) {
     //    event.preventDefault();
     //}
 
-    parent.classList.add("select", "wrapper");
+    parent.classList.add("select-search", "select", "wrapper");
     parent.insertBefore(selectWrapper, selectElement);
     header.appendChild(selectElement);
-    dropdown.appendChild(optionsList);
-    selectWrapper.appendChild(dropdown)
+    dropdownWrapper.appendChild(optionsList);
+    selectWrapper.appendChild(dropdownWrapper)
 
     // commenting this out did not break the positioning.
     //optionsList.style.top = header.offsetTop + header.offsetHeight + "px";
 
-    optionsList.classList.add("options-list");
+    optionsList.classList.add("select-search", "options-list");
 
     // open/close dropdown
     // this was selectWrapper
@@ -212,11 +221,11 @@ function selectSearch(selectElement) {
     // * add escape key to close
     header.onclick = function(event) {
         event.stopPropagation();
-        const isOpen = dropdown.hasAttribute("data-open");
+        const isOpen = dropdownWrapper.hasAttribute("data-open");
         if (isOpen) {
-            dropdown.removeAttribute("data-open");
+            dropdownWrapper.removeAttribute("data-open");
         } else {
-            dropdown.setAttribute("data-open", "");
+            dropdownWrapper.setAttribute("data-open", "");
         }
     };
 
@@ -228,15 +237,16 @@ function selectSearch(selectElement) {
         }
     };
 
-    searchField.onclick = function(event) {
+    //
+    searchInput.onclick = function(event) {
         // document click below hides us if we don't stop it
         event.stopImmediatePropagation();
     };
 
     // hide on click away
     document.addEventListener("click", function(event) {
-        if (dropdown.hasAttribute("data-open")) {
-            dropdown.removeAttribute("data-open");
+        if (dropdownWrapper.hasAttribute("data-open")) {
+            dropdownWrapper.removeAttribute("data-open");
         }
     });
 

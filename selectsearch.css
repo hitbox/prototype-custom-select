@@ -10,43 +10,55 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select#customizing_sel
 input[type=search].select {
 }
 
-.label-container {
+.select-search.label-container {
     display: flex;
     justify-content: space-between;
     flex-wrap: nowrap;
     width: 100%;
+    padding: 4px;
 }
 
-.label-container > .value {
+.select-search.label-container > .value {
     flex: auto;
 }
 
-.label-container > .arrow {
+.select-search.label-container > .arrow {
     flex-shrink: 1;
 }
 
 /* an option in select */
-.select .option {
+.select-search.select .option {
 }
 
 /* hover option in select */
-.select .option:hover {
+.select-search.select .option:hover {
     cursor: pointer;
     background-color: blue;
     color: white;
 }
 
+/* height of the dropdown */
+.select-search.options-list {
+    height: 25vw;
+    overflow: scroll;
+}
+
 /* disable hide when search is on and matched */
-.options-list.search .option.match {
+.select-search.options-list.search .option.match {
     display: block;
 }
 
+ul.select-search.options-list {
+    list-style-type: none;
+    padding: 0;
+}
+
 /* hide all options when searching, unhiding matches */
-.options-list.search .option {
+.select-search.options-list.search .option {
     display: none;
 }
 
-.options-list .option {
+.select-search.options-list > .select-search.option {
     padding: 4px;
 }
 
