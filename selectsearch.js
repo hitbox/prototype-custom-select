@@ -1,5 +1,9 @@
 // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select#customizing_select_styles
 
+// NOTE
+// * Looked into custom elements but it looks like that is for a completely
+//   new, custom element. It would not let me extend HTMLSelectElement.
+
 function createChevronDown() {
     const xmlns = "http://www.w3.org/2000/svg";
     const chevronDownSVG = document.createElementNS(xmlns, "svg");
@@ -16,11 +20,32 @@ function createChevronDown() {
     return chevronDownSVG;
 }
 
+function mimicOptionElement(originalOptionElement) {
+    /*
+     * Create HTML element to mimic <option>
+     */
+    // <li><span>...</span></li>
+    // new elements to mimic <option> elements
+    const newOptionElement = document.createElement("li");
+    const newLabelElement = document.createElement("span");
+    // update data-* attributes from original's regular attributes
+    newOptionElement.dataset = {...originalOptionElement.attributes};
+    // update classes
+    newOptionElement.classList.add("select-search", "option");
+    newLabelElement.classList.add("select-search", "label");
+    // update displayed text
+    newLabelElement.innerText = originalOptionElement.innerText;
+    newOptionElement.dataset.value = originalOptionElement.value;
+    newOptionElement.dataset.label = originalOptionElement.label;
+    newOptionElement.appendChild(newLabelElement);
+    return newOptionElement;
+}
+
 function selectSearch(selectElement) {
     // main entry point
     const selectWrapper = document.createElement("div");
     const dropdownWrapper = document.createElement("div");
-    const header = document.createElement("div");
+    const header = document.createElement("header");
     const optionsList = document.createElement("ul");
 
     const labelContainer = document.createElement("div");
@@ -28,7 +53,6 @@ function selectSearch(selectElement) {
     const labelArrow = document.createElement("div");
 
     const originalOptions = selectElement.options;
-    const parent = selectElement.parentElement;
     const multiple = selectElement.hasAttribute("multiple");
 
     function optionClick(event) {
@@ -84,10 +108,24 @@ function selectSearch(selectElement) {
     selectElement.tabIndex = -1;
 
     selectWrapper.classList.add("select-search", "select", "button");
-    selectWrapper.tabIndex = 1;
 
     // add header
     header.classList.add("select-search", "header");
+    header.tabIndex = 0;
+
+    header.addEventListener("keydown", function(event) {
+        if (!(event.shifKey || event.ctrlKey)) {
+            if (event.key === "ArrowDown") {
+                if (event.altKey) {
+                    showDropdown();
+                } else {
+                    optionsList.firstChild.focus();
+                    /* is this the correct method to stop scrolling down */
+                    event.preventDefault();
+                }
+            }
+        }
+    });
 
     currentValueLabel.innerText = selectElement.label;
     currentValueLabel.classList.add("select-search", "value");
@@ -104,9 +142,7 @@ function selectSearch(selectElement) {
     selectWrapper.appendChild(header);
 
     // make data- attributes from original
-    for (let attribute of selectElement.attributes) {
-        selectWrapper.dataset[attribute.name] = attribute.value;
-    }
+    selectWrapper.dataset = {...selectElement.attributes};
 
     // search field
     const searchDiv = document.createElement("div");
@@ -117,6 +153,14 @@ function selectSearch(selectElement) {
     searchInput.classList.add("select-search", "select");
     searchInput.setAttribute("type", "search");
     searchInput.setAttribute("placeholder", "search");
+
+    searchInput.addEventListener("keydown", function(event) {
+        if (event.key === "ArrowDown" && !event.key.ctrlKey
+            && !event.key.altKey && !event.key.shiftKey) {
+            optionsList.firstChild.focus();
+            event.preventDefault();
+        }
+    });
 
     // clear search on close?
     // clear search on click or enter?
@@ -143,77 +187,100 @@ function selectSearch(selectElement) {
 
     dropdownWrapper.appendChild(searchDiv);
 
-    // copy mimic options
-    for (let i = 0; i < originalOptions.length; i++) {
-        const optionElement = document.createElement("li");
-        const labelElement = document.createElement("span");
-        const o = originalOptions[i];
-        for (let attribute of o.attributes) {
-            optionElement.dataset[attribute.name] = attribute.value;
+    window.addEventListener("focusin", function(event) {
+        // focusin because focus doesn't bubble
+        if (!selectWrapper.contains(event.target)) {
+            // an element outside this wrapper has received focus, hide ourself.
+            hideDropdown();
         }
-        optionElement.classList.add("select-search", "option");
-        labelElement.classList.add("select-search", "label");
-        labelElement.innerText = o.label;
-        optionElement.dataset.value = o.value;
-        optionElement.dataset.label = o.label;
-        // TODO
-        // Want a way to associate optionElement back to original <option> object
-        // and call <option>.selected = !<option>.selected or something like
-        // that.
-        // https://developer.mozilla.org/en-US/docs/Web/API/HTMLOptionElement/Option
-        optionElement.onclick = optionClick;
-        optionElement.onkeyup = optionKeyUp;
-        optionElement.tabIndex = i + 1;
-        optionElement.appendChild(labelElement);
-        optionsList.appendChild(optionElement);
+    });
+
+    function simulateBlur(optionElement) {
+        // remove our focus
+        optionElement.classList.remove("selected");
+        optionElement.blur();
     }
 
-    // copy mimic option groups
-    for (let originalOptionGroup of selectElement.querySelectorAll("optgroup")) {
-        const optgroup = document.createElement("div");
-        const label = document.createElement("div");
-        const options = originalOptionGroup.querySelectorAll("option");
-        Object.assign(optgroup, originalOptionGroup);
-        optgroup.classList.add("select-search", "optgroup");
-        label.classList.add("select-search", "label");
-        label.innerText = originalOptionGroup.label;
-        optgroup.appendChild(label);
-        selectWrapper.appendChild(optgroup);
-        for (o of options) {
-            const optionElement = document.createElement("li");
-            const label = document.createElement("div");
-            for (attribute of o.attributes) {
-                optionElement.dataset[attribute.name] = attribute.value;
+    function simulateFocus(optionElement) {
+        // remove from all other custom option elements
+        for (const elem of document.querySelectorAll(".select-search.option.selected")) {
+            elem.classList.remove("selected");
+        }
+        // make this the focused
+        optionElement.classList.add("selected");
+        optionElement.focus();
+    }
+
+    // copy mimic options
+    for (const [index, originalOptionElement] of Array.apply(null, selectElement.options).entries()) {
+        const newOptionElement = mimicOptionElement(originalOptionElement);
+        newOptionElement.tabIndex = index + 1;
+        // events
+        newOptionElement.onclick = optionClick;
+        newOptionElement.onkeyup = optionKeyUp;
+        // events - keydown
+        newOptionElement.addEventListener("keydown", function(event) {
+            console.log(event);
+            if (!(event.shiftKey || event.altKey || event.ctrlKey)) {
+                if (event.key === "ArrowDown") {
+                    if (event.target.nextSibling) {
+                        event.target.nextSibling.focus();
+                        event.preventDefault();
+                    }
+                } else if (event.key === "ArrowUp") {
+                    if (event.target.previousSibling) {
+                        event.target.previousSibling.focus();
+                        event.preventDefault();
+                    } else {
+                        searchInput.focus();
+                    }
+                }
             }
-            optionElement.classList.add("select-search", "option");
-            label.classList.add("select-search", "label");
-            label.innerText = o.label;
-            optionElement.tabIndex = i + 1;
-            optionElement.dataset.value = o.value;
-            optionElement.dataset.label = o.label;
-            optionElement.onclick = optionClick;
-            optionElement.onkeyup = optionKeyUp;
-            optionElement.tabIndex = i + 1;
-            optionElement.appendChild(label);
-            optgroup.appendChild(optionElement);
-        };
-    };
+        });
+        // events - focus
+        newOptionElement.addEventListener("focus", function(event) {
+            simulateFocus(event.target);
+        });
+        // events - mouseenter
+        newOptionElement.addEventListener("mouseenter", function(event) {
+            simulateFocus(event.target);
+        });
+        // events - blur
+        newOptionElement.addEventListener("blur", function(event) {
+            simulateBlur(event.target);
+        });
+        // events - mouseenter
+        newOptionElement.addEventListener("mouseexit", function(event) {
+            simulateBlur(event.target);
+        });
+        // finally add to parent
+        optionsList.appendChild(newOptionElement);
+    }
 
-    // why was this here? it is just overwritten.
-    //selectWrapper.onclick = function(event) {
-    //    event.preventDefault();
-    //}
-
-    parent.classList.add("select-search", "select", "wrapper");
-    parent.insertBefore(selectWrapper, selectElement);
+    // insert ourself inside parent
+    selectElement.parentNode.insertBefore(selectWrapper, selectElement);
     header.appendChild(selectElement);
     dropdownWrapper.appendChild(optionsList);
     selectWrapper.appendChild(dropdownWrapper)
 
-    // commenting this out did not break the positioning.
-    //optionsList.style.top = header.offsetTop + header.offsetHeight + "px";
-
     optionsList.classList.add("select-search", "options-list");
+    optionsList.tabIndex = "-1";
+
+    // XXX
+    // LEFT OFF HERE
+    // it's behaving pretty good with the keyboard
+    // focusing working decent
+    // coloring could use some work
+    // this code is getting ugly again
+    //
+
+    function hideDropdown() {
+        dropdownWrapper.removeAttribute("data-open");
+    }
+
+    function showDropdown() {
+        dropdownWrapper.setAttribute("data-open", "");
+    }
 
     // open/close dropdown
     // this was selectWrapper
@@ -223,9 +290,9 @@ function selectSearch(selectElement) {
         event.stopPropagation();
         const isOpen = dropdownWrapper.hasAttribute("data-open");
         if (isOpen) {
-            dropdownWrapper.removeAttribute("data-open");
+            hideDropdown();
         } else {
-            dropdownWrapper.setAttribute("data-open", "");
+            showDropdown();
         }
     };
 

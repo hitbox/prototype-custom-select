@@ -33,13 +33,16 @@ input[type=search].select {
 /* hover option in select */
 .select-search.select .option:hover {
     cursor: pointer;
+}
+
+.select-search.option.selected {
     background-color: blue;
     color: white;
 }
 
 /* height of the dropdown */
 .select-search.options-list {
-    height: 25vw;
+    height: 300px;
     overflow: scroll;
 }
 
@@ -75,7 +78,7 @@ ul.select-search.options-list {
 }
 
 /* style select wrapper like a button */
-.select.button {
+.select-search.select.button {
     user-select: none;
     box-sizing: border-box;
     width: fit-content;
@@ -83,7 +86,7 @@ ul.select-search.options-list {
 }
 
 /* this is the current value shown */
-.select .header {
+.select-search.header {
     flex: 1;
     display: flex;
     width: auto;
@@ -91,7 +94,12 @@ ul.select-search.options-list {
     /* color picked from Firefox */
     border: 1px solid var(--button-border-color);
     /* radius eye-balled from Firefox */
-    border-radius: 4px;
+    /*border-radius: 4px;*/
+}
+
+.select-search.header:focus {
+    /* color picked off firefox input focus */
+    outline: #3584e4 solid 3px;
 }
 
 .select .header:hover {

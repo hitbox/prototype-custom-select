@@ -6,37 +6,48 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select#customizing_sel
     <head>
         <meta charset="UTF-8">
         <link rel="icon" href="data:,"><!-- empty favicon -->
-        <!--<link rel="stylesheet" href="reset.css">-->
+        <!-- required -->
         <link rel="stylesheet" href="selectsearch.css">
-        <!--<link rel="stylesheet" href="selectsearch.debug.css">-->
         <script src="selectsearch.js"></script>
+        <!-- optional css and javascript -->
+        <!--<link rel="stylesheet" href="reset.css">-->
+        <link rel="stylesheet" href="demo.css">
+        <!--<link rel="stylesheet" href="selectsearch.debug.css">-->
         <script src="init.js"></script>
     </head>
     <body>
-        <form>
-            <!-- <option> tags added by init.js -->
-            <fieldset>
-                <legend>Standard controls</legend>
-                <select name="standard-select-1" autocomplete="off"></select>
-            </fieldset>
-            <fieldset>
-                <legend>Standard controls</legend>
-                <select name="standard-select-multiple-1" autocomplete="off" multiple></select>
-            </fieldset>
-            <h1>Custom</h1>
-            <fieldset>
-                <legend>select with search</legend>
-                <select autocomplete="off" class="search" id="standard-select-2" name="select-search"></select>
-            </fieldset>
-            <!--
-            <fieldset>
-                <legend>multiple</legend>
-                <select name="select-search-multiple" autocomplete="off" class="search" multiple></select>
-            </fieldset>
-            -->
-            <button type="submit">Submit</button>
-            <input type="submit" value="Post">
-        </form>
-        <div id="post">Here's where the post output will go.</div>
+        <main>
+            <form>
+                <!-- <option> tags added by init.js -->
+                <fieldset>
+                    <legend>Standard controls</legend>
+                    <select name="standard-select-1" autocomplete="off"></select>
+                </fieldset>
+                <fieldset>
+                    <legend>Standard controls</legend>
+                    <select name="standard-select-multiple-1" autocomplete="off" multiple>
+                        <!-- options added by .js -->
+                    </select>
+                </fieldset>
+                <h1>Custom</h1>
+                <fieldset>
+                    <legend>select with search</legend>
+                    <select autocomplete="off" class="search" id="standard-select-2" name="select-search"></select>
+                        <!-- options added by .js -->
+                    </select>
+                </fieldset>
+                <!--
+                <fieldset>
+                    <legend>multiple</legend>
+                    <select name="select-search-multiple" autocomplete="off" class="search" multiple></select>
+                </fieldset>
+                -->
+                <div class="buttonbar">
+                    <button type="submit">Submit</button>
+                    <input type="submit" value="Post">
+                </div>
+            </form>
+            <div id="post">Here's where the post output will go.</div>
+        </main>
     </body>
 </html>
