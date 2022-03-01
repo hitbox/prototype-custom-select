@@ -1,9 +1,26 @@
+/*
 .select.button {
     width: 200px;
 }
+*/
 
+/*
 .options-list {
     max-height: 30vh;
     display: block;
     overflow: scroll;
+}
+*/
+
+#test-style-1 {
+    /*
+    -webkit-appearance: menulist-button;
+    -moz-appearance: menulist-button;
+    */
+    /*appearance: textfield;*/
+    /* this just doesn't work or do anything */
+}
+
+main {
+    padding-bottom: 100vw;
 }

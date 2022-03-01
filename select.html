@@ -7,47 +7,67 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select#customizing_sel
         <meta charset="UTF-8">
         <link rel="icon" href="data:,"><!-- empty favicon -->
         <!-- required -->
-        <link rel="stylesheet" href="selectsearch.css">
-        <script src="selectsearch.js"></script>
+        <script src="select-search.js"></script>
+        <!--
+        <link rel="stylesheet" href="select-search.css">
+        -->
         <!-- optional css and javascript -->
         <!--<link rel="stylesheet" href="reset.css">-->
-        <link rel="stylesheet" href="demo.css">
+        <!--<link rel="stylesheet" href="demo.css">-->
         <!--<link rel="stylesheet" href="selectsearch.debug.css">-->
         <script src="init.js"></script>
+        <style>
+        main {
+            max-width: 500px;
+        }
+        </style>
     </head>
     <body>
         <main>
             <form>
                 <!-- <option> tags added by init.js -->
-                <fieldset>
-                    <legend>Standard controls</legend>
-                    <select name="standard-select-1" autocomplete="off"></select>
-                </fieldset>
-                <fieldset>
-                    <legend>Standard controls</legend>
-                    <select name="standard-select-multiple-1" autocomplete="off" multiple>
-                        <!-- options added by .js -->
-                    </select>
-                </fieldset>
-                <h1>Custom</h1>
-                <fieldset>
-                    <legend>select with search</legend>
-                    <select autocomplete="off" class="search" id="standard-select-2" name="select-search"></select>
-                        <!-- options added by .js -->
-                    </select>
-                </fieldset>
                 <!--
                 <fieldset>
-                    <legend>multiple</legend>
-                    <select name="select-search-multiple" autocomplete="off" class="search" multiple></select>
+                    <legend>Standard controls</legend>
+                    <select name="standard-select-1" autocomplete="off" class="touch"></select>
+                </fieldset>
+                <fieldset>
+                    <legend>Standard controls</legend>
+                    <select name="standard-select-multiple-1" autocomplete="off" multiple class="touch"></select>
                 </fieldset>
                 -->
+                <h3>Custom</h3>
+                <!--
+                <fieldset>
+                    <legend>select with search</legend>
+                    <select autocomplete="off" class="search touch" id="standard-select-2" name="select-search"></select></select>
+                </fieldset>
+                -->
+                <fieldset>
+                    <legend>multiple with search</legend>
+                    <select name="select-search-multiple" autocomplete="off" class="search touch" multiple size="10"></select>
+                </fieldset>
                 <div class="buttonbar">
                     <button type="submit">Submit</button>
                     <input type="submit" value="Post">
                 </div>
             </form>
-            <div id="post">Here's where the post output will go.</div>
+            <p>Here's where the post output will go.</p>
+            <div id="post"></div>
+            <p>Testing trying to hide in original &lt;select&gt;</p>
+            <!--
+            <form>
+                <select>
+                    <option>Option 1</option>
+                    <option disabled="disable">Option 2</option>
+                    <option disabled>Option 3</option>
+                    <option hidden="hidden">Option 4</option>
+                    <option hidden>Option 5</option>
+                    <option>Option 6</option>
+                    <option>Option 7</option>
+                </select>
+            </form>
+            -->
         </main>
     </body>
 </html>

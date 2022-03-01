@@ -1,0 +1,94 @@
+.select-search.select-search-label-container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    width: 100%;
+    padding: 4px;
+}
+
+/* a selected option */
+.select-search.select-search-option {
+    color: black;
+    background: white;
+}
+
+/* a selected option */
+.select-search.select-search-option[data-selected] {
+    color: white;
+    background-color: #a0a0a0;
+}
+
+/* hover option in select */
+.select-search.select-search-option:hover {
+    cursor: pointer;
+    color: white;
+    background-color: #909090;
+}
+
+.select-search.select-search-option[data-selected]:hover {
+    cursor: pointer;
+    color: white;
+    background-color: #707070;
+}
+
+/* height of the option list */
+.select-search.select-search-options-list {
+    overflow: scroll;
+}
+
+/* disable hide when search is on and matched */
+/* option mimic matching search */
+.select-search.select-search-options-list.select-search-search .select-search-option.select-search-match {
+    display: block;
+}
+
+ul.select-search.select-search-options-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* hide all options when searching, unhiding matches */
+.select-search.select-search-options-list.select-search-search .select-search-option {
+    display: none;
+}
+
+.select-search.select-search-options-list > .select-search.select-search-option {
+    padding: 4px;
+}
+
+.select-search.select-search-dropdown {
+    background-color: white;
+    color: black;
+    position: absolute;
+    border: 1px solid black;
+    display: none;
+    box-sizing: border-box;
+    z-index: 2;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+    display: none;
+}
+
+.select-search.select-search-dropdown.select-search-open {
+    display: initial;
+}
+
+/* button mimic to open dropdown */
+.select-search.select-search-button {
+    font-size: .95rem;
+    cursor: pointer;
+    border: 1px outset LightGray;
+    border-radius: 4px;
+    padding: 2px 3px;
+    background: #e1e1e1;
+    box-sizing: border-box;
+    width: fit-content;
+    /* flex to keep label and icon inline */
+    display: flex;
+    align-items: center;
+}
+
+.select-search.select-search-label {
+    flex-grow: 2;
+}
